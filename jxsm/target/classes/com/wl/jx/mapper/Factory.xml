@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wl.jx.mapper.FactoryMapper">
+
+	<!-- 数据库表映射 -->
+	<resultMap id="factoryRM" type="com.wl.jx.domain.Factory">
+		<id property="id" column="FACTORY_ID"/>
+		<result property="fullName" column="FULL_NAME"/>
+		<result property="factoryName" column="FACTORY_NAME"/>
+		<result property="contractor" column="CONTRACTOR"/>
+		<result property="phone" column="PHONE"/>
+		<result property="mobile" column="MOBILE"/>
+		<result property="fax" column="FAX"/>
+		<result property="cnote" column="CNOTE"/>
+		<result property="orderNo" column="ORDER_NO"/>
+		<result property="state" column="STATE"/>
+	</resultMap>
+	
+	<!-- 查询所有记录 -->
+	<select id="find" parameterType="com.wl.jx.domain.Factory" resultMap="factoryRM">
+		select * from factory_c
+		<where>
+			<if test="state!=null">
+				and state=#{state}
+			</if>
+		</where>
+		order by ORDER_NO
+	</select>
+	
+	<!-- 查询一个记录 -->
+	<select id="get" parameterType="String" resultMap="factoryRM">
+		select * from factory_c
+		where FACTORY_ID=#{id}
+	</select>
+	
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.wl.jx.domain.Factory">
+		insert into factory_c
+		(FACTORY_ID,FULL_NAME,FACTORY_NAME,CONTRACTOR,PHONE,MOBILE,FAX,CNOTE,ORDER_NO,STATE)
+		values
+		(UUID(),#{fullName},#{factoryName},#{contractor},#{phone},#{mobile},#{fax},#{cnote},#{orderNo},#{state})
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="com.wl.jx.domain.Factory">
+		update factory_c
+		<set>
+			<if test="fullName!=null">FULL_NAME=#{fullName},</if>
+			<if test="factoryName!=null">FACTORY_NAME=#{factoryName},</if>
+			<if test="contractor!=null">CONTRACTOR=#{contractor},</if>
+			<if test="phone!=null">PHONE=#{phone},</if>
+			<if test="mobile!=null">MOBILE=#{mobile},</if>
+			<if test="fax!=null">FAX=#{fax},</if>
+			<if test="cnote!=null">CNOTE=#{cnote},</if>
+			<if test="orderNo!=null">ORDER_NO=#{orderNo},</if>
+			<if test="state!=null">STATE=#{state},</if>
+		</set>
+			where FACTORY_ID=#{id}
+	</update>
+	
+	<!-- 删除单挑记录 -->
+	<delete id="delete" parameterType="String">
+		delete from factory_c
+		where FACTORY_ID=#{id}
+	</delete>
+	
+	<!-- 删除多条记录 -->
+	<delete id="deleteBatch" parameterType="String">
+		delete from factory_c
+		where FACTORY_ID in 
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<!-- 修改状态，批量启用停用 -->
+	<update id="changeState" parameterType="map">
+		update factory_c
+		set state=#{state}
+		where FACTORY_ID in
+		<foreach collection="ids" item="id" open="(" close=")" separator=","> 
+			#{id}
+		</foreach>
+	</update>
+</mapper>
