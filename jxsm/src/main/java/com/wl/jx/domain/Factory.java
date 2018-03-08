@@ -1,6 +1,8 @@
 package com.wl.jx.domain;
 
-public class Factory {
+import java.io.Serializable;
+
+public class Factory implements Serializable {
 	private String id;
 	private String fullName;
 	private String factoryName;

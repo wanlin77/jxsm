@@ -15,5 +15,6 @@ public interface FactoryService {
 	public void delete(Serializable[] ids);
 	
 	public void changeState(Map<String,Object> map);
+	public List<Factory> combo();
 }
 

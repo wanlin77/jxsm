@@ -29,6 +29,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		order by ORDER_NO
 	</select>
 	
+	<!-- 厂家下拉列表,只显示启用的厂家 -->
+	<select id="combo" resultMap="factoryRM">
+		select factory_id,factory_name from factory_c where state=1
+	</select>
+	
 	<!-- 查询一个记录 -->
 	<select id="get" parameterType="String" resultMap="factoryRM">
 		select * from factory_c

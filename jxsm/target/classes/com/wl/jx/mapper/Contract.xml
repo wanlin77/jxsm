@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper	namespace="com.wl.jx.mapper.ContractMapper">
+	
+	<!-- 映射对象 -->
+	<resultMap id="ContractRM" type="com.wl.jx.domain.Contract">
+		<id property="id" column="CONTRACT_ID"/>
+		
+		<result property="cpnum" column="CPNUM"/>
+		<result property="epnum" column="EPNUM"/>
+		
+		<result property="offeror" column="OFFEROR"/>
+		<result property="contractNo" column="CONTRACT_NO"/>
+		<result property="signingDate" column="SIGNING_DATE"/>
+		<result property="inputBy" column="INPUT_BY"/>
+		<result property="checkBy" column="CHECK_BY"/>
+		<result property="inspector" column="INSPECTOR"/>
+		<result property="totalAmount" column="TOTAL_AMOUNT"/>
+		<result property="crequest" column="CREQUEST"/>
+		<result property="customName" column="CUSTOM_NAME"/>
+		<result property="shipTime" column="SHIP_TIME"/>
+		<result property="importNum" column="IMPORT_NUM"/>
+		<result property="deliveryPeriod" column="DELIVERY_PERIOD"/>
+		<result property="remark" column="REMARK"/>
+		<result property="printStyle" column="PRINT_STYLE"/>
+		<result property="oldState" column="OLD_STATE"/>
+		<result property="state" column="STATE"/>
+		<result property="outState" column="OUT_STATE"/>
+		<result property="tradeTerms" column="TRADE_TERMS"/>
+		
+		<result property="createBy" column="CREATE_BY"/>
+		<result property="createDept" column="CREATE_DEPT"/>
+		<result property="createTime" column="CREATE_TIME"/>
+	</resultMap>
+	
+	<!-- 查看，MyBatis查询的结果集，不能有同名字段 -->
+	<resultMap id="ContractViewRM" type="com.wl.jx.vo.Contract">
+		<id property="id" column="CONTRACT_ID"/>
+		<result property="offeror" column="OFFEROR"/>
+		<result property="contractNo" column="CONTRACT_NO"/>
+		<result property="printStyle" column="PRINT_STYLE"/>
+		<result property="customName" column="CUSTOM_NAME"/>
+		<result property="signingDate" column="SIGNING_DATE"/>
+		<result property="inputBy" column="INPUT_BY"/>
+		<result property="checkBy" column="CHECK_BY"/>
+		<result property="inspector" column="INSPECTOR"/>
+		<result property="shipTime" column="SHIP_TIME"/>
+		<result property="deliveryPeriod" column="DELIVERY_PERIOD"/>
+		<result property="importNum" column="IMPORT_NUM"/>
+		<result property="tradeTerms" column="TRADE_TERMS"/>
+		<result property="crequest" column="CREQUEST"/>
+		<result property="remark" column="REMARK"/>
+		
+		<!-- 货物信息 -->
+		<collection property="contractProducts" ofType="com.wl.jx.vo.ContractProduct">
+			<id property="contractProductId" column="CONTRACT_PRODUCT_ID"/>
+			<result property="contractId" column="CONTRACT_ID"/>
+			
+			<result property="productImage" column="PRODUCT_IMAGE"/>
+			<result property="productNo" column="PRODUCT_NO"/>
+			<result property="productDesc" column="PRODUCT_DESC"/>
+			<result property="cnumber" column="CNUMBER"/>
+			<result property="packingUnit" column="PACKING_UNIT"/>
+			<result property="price" column="PRICE"/>
+			<result property="amount" column="AMOUNT"/>
+			
+			<!-- 货物厂家 -->
+			<association property="factory" javaType="com.wl.jx.domain.Factory">
+				<id property="factoryId" column="FACTORY_ID"/>
+				<result property="factoryName" column="FACTORY_NAME"/>
+			</association>
+			
+			<!-- 附件信息 -->
+			<collection property="extCproducts" ofType="com.wl.jx.vo.ExtCproduct">
+				<id property="extCproductId" column="EXT_CPRODUCT_ID"/>
+				<result property="contractProductId" column="EXT_CONTRACT_PRODUCT_ID"/>
+				<result property="productImage" column="EXT_PRODUCT_IMAGE"/>
+				<result property="productNo" column="EXT_PRODUCT_NO"/>
+				<result property="productDesc" column="EXT_PRODUCT_DESC"/>
+				<result property="cnumber" column="EXT_CNUMBER"/>
+				<result property="packingUnit" column="EXT_PACKING_UNIT"/>
+				<result property="price" column="EXT_PRICE"/>
+				<result property="amount" column="EXT_AMOUNT"/>
+				
+				<!-- 货物厂家 -->
+				<association property="factory" javaType="com.wl.jx.domain.Factory">
+					<id property="factoryId" column="EXT_FACTORY_ID"/><!-- 因为有重复的列名，重命名 -->
+					<result property="factoryName" column="EXT_FACTORY_NAME"/>
+				</association>
+			</collection>
+		</collection>
+		
+	</resultMap>
+	
+	<!-- 列表 -->
+	<select id="find" parameterType="com.wl.jx.domain.Contract" resultMap="ContractRM">
+		SELECT
+		(
+			SELECT COUNT(*) FROM contract_product_c WHERE
+			CONTRACT_ID = c.CONTRACT_ID
+		)
+		cpnum,
+		(
+			SELECT COUNT(*) FROM ext_cproduct_c WHERE
+			CONTRACT_PRODUCT_ID IN
+			(
+				SELECT CONTRACT_PRODUCT_ID FROM contract_product_c
+				WHERE CONTRACT_ID = c.CONTRACT_ID
+			)
+		)
+		epnum,
+		c.*
+		FROM contract_c c
+	</select>
+	
+	<!-- 查看 -->
+	<select id="view" parameterType="String" resultMap="ContractViewRM">
+		SELECT
+			c.*,
+			t.CONTRACT_PRODUCT_ID,t.CONTRACT_ID,t.FACTORY_NAME,t.PRODUCT_NO,t.FACTORY_NAME,t.PRODUCT_NO,t.PRODUCT_DESC,t.CNUMBER,t.PACKING_UNIT,t.PRICE,t.AMOUNT,
+			t.EXT_CPRODUCT_ID,t.EXT_FACTORY_NAME,t.EXT_PRODUCT_NO,t.EXT_FACTORY_NAME,t.EXT_PRODUCT_NO,t.EXT_PRODUCT_DESC,t.EXT_CNUMBER,t.EXT_PACKING_UNIT,t.EXT_PRICE,t.EXT_AMOUNT
+		FROM
+		(SELECT * FROM contract_c) c
+		LEFT JOIN
+		(
+			SELECT
+				cp.CONTRACT_PRODUCT_ID,cp.CONTRACT_ID,
+				cp.FACTORY_NAME,cp.PRODUCT_NO,cp.PRODUCT_DESC,cp.CNUMBER,cp.PACKING_UNIT,cp.PRICE,cp.AMOUNT,
+				ep.EXT_CPRODUCT_ID,ep.FACTORY_NAME AS EXT_FACTORY_NAME,ep.PRODUCT_NO AS EXT_PRODUCT_NO,ep.PRODUCT_DESC AS EXT_PRODUCT_DESC,ep.CNUMBER AS EXT_CNUMBER,ep.PACKING_UNIT AS EXT_PACKING_UNIT,ep.PRICE AS EXT_PRICE,ep.AMOUNT AS EXT_AMOUNT
+			FROM
+			(
+				SELECT
+					cp.CONTRACT_PRODUCT_ID,cp.CONTRACT_ID,f.FACTORY_NAME,cp.PRODUCT_NO,
+					cp.PRODUCT_DESC,cp.CNUMBER,cp.PACKING_UNIT,cp.PRICE,cp.AMOUNT
+				FROM
+				(SELECT CONTRACT_PRODUCT_ID,FACTORY_ID,CONTRACT_ID,PRODUCT_NO,PRODUCT_DESC,CNUMBER,PACKING_UNIT,PRICE,AMOUNT
+				FROM contract_product_c) cp
+				LEFT JOIN
+				(SELECT FACTORY_ID,FACTORY_NAME FROM factory_c) f
+				ON cp.FACTORY_ID=f.FACTORY_ID
+			) cp
+		LEFT JOIN
+		(
+			SELECT
+				ep.EXT_CPRODUCT_ID,ep.CONTRACT_PRODUCT_ID,f.FACTORY_NAME,ep.PRODUCT_NO,
+				ep.PRODUCT_DESC,ep.CNUMBER,ep.PACKING_UNIT,ep.PRICE,ep.AMOUNT
+			FROM
+			(
+				select EXT_CPRODUCT_ID,CONTRACT_PRODUCT_ID,FACTORY_ID,PRODUCT_NO,PRODUCT_DESC,CNUMBER,PACKING_UNIT,PRICE,AMOUNT
+				FROM ext_cproduct_c) ep
+			LEFT JOIN
+			(	
+				SELECT FACTORY_ID,FACTORY_NAME FROM factory_c
+			) f
+			ON ep.FACTORY_ID=f.FACTORY_ID
+		) ep
+			ON cp.CONTRACT_PRODUCT_ID=ep.CONTRACT_PRODUCT_ID
+		) t
+		ON c.CONTRACT_ID=t.CONTRACT_ID
+		WHERE c.CONTRACT_ID=#{id}
+	</select>
+	
+	<!-- 查询一条 -->
+	<select id="get" parameterType="String" resultMap="ContractRM">
+		select * from contract_c
+		where CONTRACT_ID=#{id}
+	</select>
+	
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.wl.jx.domain.Contract">
+		insert into contract_c
+		(CONTRACT_ID,OFFEROR,CONTRACT_NO,SIGNING_DATE,INPUT_BY,CHECK_BY,INSPECTOR,CREQUEST,CUSTOM_NAME,SHIP_TIME,IMPORT_NUM,DELIVERY_PERIOD,REMARK,PRINT_STYLE,OLD_STATE,STATE,OUT_STATE,TRADE_TERMS)
+		values
+		(uuid(),#{offeror},#{contractNo},#{signingDate},#{inputBy},#{checkBy},#{inspector},#{crequest},#{customName},#{shipTime},#{importNum},#{deliveryPeriod},#{remark},#{printStyle},#{oldState},#{state},#{outState},#{tradeTerms})
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="update" parameterType="com.wl.jx.domain.Contract">
+		update contract_c
+		<set>
+			<if test="offeror!=null">OFFEROR=#{offeror},</if>
+			<if test="contractNo!=null">CONTRACT_NO=#{contractNo},</if>
+			<if test="signingDate!=null">SIGNING_DATE=#{signingDate},</if>
+			<if test="inputBy!=null">INPUT_BY=#{inputBy},</if>
+			<if test="checkBy!=null">CHECK_BY=#{checkBy},</if>
+			<if test="inspector!=null">INSPECTOR=#{inspector},</if>
+			<if test="crequest!=null">CREQUEST=#{crequest},</if>
+			<if test="customName!=null">CUSTOM_NAME=#{customName},</if>
+			<if test="shipTime!=null">SHIP_TIME=#{shipTime},</if>
+			<if test="importNum!=null">IMPORT_NUM=#{importNum},</if>
+			<if test="deliveryPeriod!=null">DELIVERY_PERIOD=#{deliveryPeriod},</if>
+			<if test="remark!=null">REMARK=#{remark},</if>
+			<if test="printStyle!=null">PRINT_STYLE=#{printStyle},</if>
+			<if test="oldState!=null">OLD_STATE=#{oldState},</if>
+			<if test="state!=null">STATE=#{state},</if>
+			<if test="outState!=null">OUT_STATE=#{outState},</if>
+			<if test="tradeTerms!=null">TRADE_TERMS=#{tradeTerms},</if>
+		</set>
+		where CONTRACT_ID=#{id}
+	</update>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteBatch" parameterType="string">
+		delete from contract_c
+		where CONTRACT_ID in
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	
+</mapper>

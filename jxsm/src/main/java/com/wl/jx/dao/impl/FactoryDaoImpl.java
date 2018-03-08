@@ -1,6 +1,7 @@
 package com.wl.jx.dao.impl;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
@@ -17,5 +18,11 @@ public class FactoryDaoImpl extends BaseDaoImpl<Factory> implements FactoryDao{
 
 	public void changeState(Map<String, Object> map) {
 		this.getSqlSession().update((this.getNs() + "changeState"), map);
+	}
+	
+	//下拉列表
+	public List<Factory> combo() {
+		List<Factory> factoryList = this.getSqlSession().selectList((this.getNs() + "combo"));
+		return factoryList;
 	}
 }

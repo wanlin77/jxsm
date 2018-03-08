@@ -1,5 +1,6 @@
 package com.wl.jx.controller.basicinfo.factory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,6 +10,9 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -26,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.wl.jx.controller.BaseController;
 import com.wl.jx.domain.Factory;
 import com.wl.jx.service.FactoryService;
+import com.wl.util.DownloadUtil;
+import com.wl.util.file.FileUtil;
 
 
 @Controller
@@ -121,7 +127,7 @@ public class FactoryController extends BaseController {
 	
 	//打印
 	@RequestMapping("/basicinfo/factory/print.action")
-	public void print() throws FileNotFoundException, IOException {
+	public void print(HttpServletRequest request, HttpServletResponse response) throws FileNotFoundException, IOException {
 		/*
 		 * 操作步骤
 		 * 1.获取数据
@@ -197,10 +203,32 @@ public class FactoryController extends BaseController {
 			nCell.setCellStyle(this.textStyle(wb));
 		}
 		
-		OutputStream os = new FileOutputStream("d:\\factory.xls");		//输出流
-		wb.write(os);						//写入到文件中
-		os.flush();							//清空缓存
-		os.close();							//关闭
+//		String path = request.getSession().getServletContext().getRealPath("/");		//虚拟路径对应的真实物理路径
+//		path += "/tmpfile";				//防止tomcat,jdk获取不到路径
+//		File file = new File(path);
+//		if(!file.exists()) {
+//			file.mkdirs();				//创建多级目录
+//		}
+//		
+//		
+//		FileUtil fu = new FileUtil();
+//		
+//		String fileName = path + "/" + fu.newFile(path, "factory.xls");		//产生新文件名，防止冲突
+		
+		
+		
+//		OutputStream os = new FileOutputStream(fileName);		//输出流
+//		wb.write(os);						//写入到文件中
+//		os.flush();							//清空缓存
+//		os.close();							//关闭
+		
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();	//生成流对象
+		wb.write(byteArrayOutputStream);
+		
+		DownloadUtil du = new DownloadUtil();
+//		du.prototypeDownload(file, returnName, response, delFlag);			//下载临时文件
+		du.download(byteArrayOutputStream, response, "生产厂家通讯录.xls");		//弹出下载框，用户就可以直接下载
+								
 	}
 	
 	//大标题样式
