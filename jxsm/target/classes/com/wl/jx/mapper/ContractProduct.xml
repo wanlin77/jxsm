@@ -74,4 +74,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where CONTRACT_PRODUCT_ID=#{id}
 	</delete>
 	
+	<!-- 根据合同号删除 -->
+	<delete id="deleteByContractId" parameterType="String">
+		delete from contract_product_c
+		where CONTRACT_ID=#{contractId}
+	</delete>
+	
 </mapper>

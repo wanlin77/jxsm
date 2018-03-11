@@ -1,6 +1,11 @@
 package com.wl.jx.controller.cargo.contract;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.wl.jx.controller.BaseController;
 import com.wl.jx.domain.Contract;
+import com.wl.jx.print.ContractPrint;
 import com.wl.jx.service.ContractService;
 
 @Controller
@@ -68,4 +74,41 @@ public class ContractController extends BaseController {
 		model.addAttribute("obj", obj);
 		return "cargo/contract/jContractView.jsp";
 	}
+	
+	//批量进行上报
+	@RequestMapping("/cargo/contract/start.action")
+	public String submit(String id) {
+		this.changeState(1, id.split(","));			//对多个id进行解串
+		
+		return "redirect:/cargo/contract/list.action";
+	}
+	
+	//批量进行取消
+	@RequestMapping("/cargo/contract/stop.action")
+	public String cancel(String id) {
+		this.changeState(0, id.split(","));
+		
+		return "redirect:/cargo/contract/list.action";
+	}
+	
+	//修改状态   	0草稿1上报
+	private void changeState(Integer stateValue,String[] ids) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("state", stateValue);					
+		map.put("ids", ids);
+		
+		contractService.changeState(map);
+	}
+	
+	//查看
+	@RequestMapping("/cargo/contract/print.action")
+	public void print(String id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String path = request.getSession().getServletContext().getRealPath("/");
+		
+		com.wl.jx.vo.Contract contract = contractService.view(id);
+		ContractPrint contractPrint = new ContractPrint();
+		contractPrint.print(contract, path, response);
+		
+	}
+	
 }

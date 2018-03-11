@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wl.jx.dao.ContractProductDao;
+import com.wl.jx.dao.ExtCproductDao;
 import com.wl.jx.domain.ContractProduct;
 import com.wl.jx.service.ContractProductService;
 
@@ -15,6 +16,8 @@ import com.wl.jx.service.ContractProductService;
 public class ContractProductServiceImpl implements ContractProductService {
 	@Autowired
 	ContractProductDao contractProductDao;
+	@Autowired
+	ExtCproductDao extCproductDao;
 	
 	public List<ContractProduct> find(ContractProduct contractProduct) {
 		return contractProductDao.find(contractProduct);
@@ -33,6 +36,7 @@ public class ContractProductServiceImpl implements ContractProductService {
 	}
 
 	public void delete(Serializable id) {
+		extCproductDao.deleteByContractProductId(id);
 		contractProductDao.delete(id);
 	}
 

@@ -3,7 +3,7 @@ package com.wl.jx.vo;
 import java.util.Date;
 import java.util.List;
 
-import com.wl.jx.domain.ContractProduct;
+import com.wl.jx.vo.ContractProduct;
 
 public class Contract {
 	private String id;

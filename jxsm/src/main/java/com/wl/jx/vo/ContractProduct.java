@@ -9,6 +9,7 @@ public class ContractProduct {
 	private String contractId;
 	private String productNo;
 	private String productDesc;
+	private String productImage;
 	private Integer cnumber;
 	private String packingUnit;
 	private Double price;
@@ -17,6 +18,13 @@ public class ContractProduct {
 	private Factory factory;
 	private List<ExtCproduct> extCproducts;
 	
+	
+	public String getProductImage() {
+		return productImage;
+	}
+	public void setProductImage(String productImage) {
+		this.productImage = productImage;
+	}
 	public String getContractProductId() {
 		return contractProductId;
 	}

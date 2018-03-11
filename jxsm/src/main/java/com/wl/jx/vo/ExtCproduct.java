@@ -6,6 +6,7 @@ public class ExtCproduct {
 	private String extCproductId;
 	private String productNo;
 	private String productDesc;
+	private String productImage;
 	private Integer cnumber;
 	private String packingUnit;
 	private Double price;
@@ -36,6 +37,14 @@ public class ExtCproduct {
 
 	public void setProductDesc(String productDesc) {
 		this.productDesc = productDesc;
+	}
+	
+	public String getProductImage() {
+		return productImage;
+	}
+
+	public void setProductImage(String productImage) {
+		this.productImage = productImage;
 	}
 
 	public Integer getCnumber() {

@@ -18,6 +18,8 @@
 <li id="new"><a href="#" onclick="formSubmit('tocreate.action','_self');this.blur();">新建</a></li>
 <li id="update"><a href="#" onclick="formSubmit('toupdate.action','_self');this.blur();">修改</a></li>
 <li id="delete"><a href="#" onclick="formSubmit('deletebatch.action','_self');this.blur();">删除</a></li>
+<li id="new"><a href="#" onclick="formSubmit('start.action','_self');this.blur();">上报</a></li>
+<li id="new"><a href="#" onclick="formSubmit('stop.action','_self');this.blur();">取消</a></li>
 <li id="print"><a href="#" onclick="formSubmit('print.action','_self');this.blur();">打印</a></li>
 </ul>
   </div>

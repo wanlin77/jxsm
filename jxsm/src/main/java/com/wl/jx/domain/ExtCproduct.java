@@ -6,9 +6,9 @@ public class ExtCproduct {
 	private String factoryName;				//为了列表显示中文名称
 	
 	private String id;
-	private String productImage;
 	private String productNo;
 	private String productDesc;
+	private String productImage;
 	private Integer cnumber;
 	private String packingUnit;
 	private Double price;

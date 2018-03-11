@@ -74,4 +74,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where EXT_CPRODUCT_ID=#{id}
 	</delete>
 	
+	<!-- 根据合同号删除附件 -->
+	<delete id="deleteByContractId" parameterType="String">
+		DELETE  FROM ext_cproduct_c WHERE contract_product_id IN
+		(
+			select contract_product_id from contract_product_c
+			where contract_id=#{contract_id}
+		)
+	</delete>
+	
+	<!-- 根据货物ID删除附件 -->
+	<delete id="deleteByContractProductId" parameterType="String">
+		delete from ext_cproduct_c
+		where CONTRACT_PRODUCT_ID=#{contractProductId}
+	</delete>
+	
 </mapper>
