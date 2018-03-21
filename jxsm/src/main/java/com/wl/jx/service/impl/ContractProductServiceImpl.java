@@ -44,4 +44,8 @@ public class ContractProductServiceImpl implements ContractProductService {
 		contractProductDao.deleteBatch(ids);;
 	}
 
+	public List<ContractProduct> findForExport(Serializable contractIds) {
+		return contractProductDao.findForExport(contractIds);
+	}
+
 }

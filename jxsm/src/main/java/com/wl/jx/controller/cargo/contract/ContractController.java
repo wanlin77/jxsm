@@ -100,15 +100,44 @@ public class ContractController extends BaseController {
 		contractService.changeState(map);
 	}
 	
-	//查看
+	//打印
 	@RequestMapping("/cargo/contract/print.action")
-	public void print(String id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void print(String[] id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String path = request.getSession().getServletContext().getRealPath("/");
-		
-		com.wl.jx.vo.Contract contract = contractService.view(id);
 		ContractPrint contractPrint = new ContractPrint();
-		contractPrint.print(contract, path, response);
+		com.wl.jx.vo.Contract contract;
+		for (int i = 0; i < id.length; i++) {
+			contract = contractService.view(id[i]);
+			contractPrint.print(contract, path, response);			//这里本打算一次打印多个合同，但是1次request1次response响应。无法实现，可以使选多个合同打印不报错，只答应第一个。这个问题留到以后解决
+		}
 		
 	}
 	
+	//归档
+	@RequestMapping("/cargo/contract/pigeonhole.action")
+	public String pigeonhole(String id) {
+		contractService.pigeonhole(id.split(","));
+		
+		
+		return "redirect:/cargo/contract/list.action";
+	}
+	
+	
+	//历史合同列表
+	@RequestMapping("/cargo/contract/historylist.action")
+	public String historylist(Contract contract, Model model) {
+		List<Contract> dataList = contractService.findForHistory(contract);
+		model.addAttribute("dataList", dataList);
+		
+		return "cargo/contract/jContractHistoryList.jsp";
+	}
+	
+	//还原
+	@RequestMapping("/cargo/contract/turnback.action")
+	public String turnback(String id) {
+		contractService.turnback(id.split(","));
+		
+		
+		return "redirect:/cargo/contract/historylist.action";
+	}
 }

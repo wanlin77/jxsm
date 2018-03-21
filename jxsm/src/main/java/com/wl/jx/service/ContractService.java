@@ -19,5 +19,8 @@ public interface ContractService {
 	public void changeState(Map<String,Object> map);
 	public List<OutProduct> findOutProduct(Serializable inputDate);
 	public List<String> getExtName(Serializable contractProductId);
+	public void pigeonhole(Serializable[] contractIds);
+	public List<Contract> findForHistory(Contract contract);
+	public void turnback(Serializable[] contractIds);
 }
 

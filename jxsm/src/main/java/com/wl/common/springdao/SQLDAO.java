@@ -20,13 +20,13 @@ import com.wl.util.UtilFuns;
  * SQLDAO sqlDao = (SQLDAO)AppContext.getInstance().getAppContext().getBean("sqlDao");
  * 
  */
-public class SQLDAO {
-	private static Logger log = Logger.getLogger(SQLDAO.class);
+public class SqlDao {
+	private static Logger log = Logger.getLogger(SqlDao.class);
 	private UtilFuns utilFuns = new UtilFuns();
+	
     private JdbcTemplate jdbcTemplate;
-    
-	public void setDataSource(DataSource ds){
-		jdbcTemplate = new JdbcTemplate(ds);
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
 	}
 
 	public int findInt(String sql){

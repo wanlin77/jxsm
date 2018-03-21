@@ -131,6 +131,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		epnum,
 		c.*
 		FROM contract_c c
+		<where>
+			<if test="state!=null">c.state=#{state}</if>
+		</where>
+	</select>
+	
+	<!-- 查询历史列表 -->
+	<select id="findForHistory" parameterType="com.wl.jx.domain.Contract" resultMap="ContractRM">
+		SELECT
+		(
+			SELECT COUNT(*) FROM contract_product_his_c WHERE
+			CONTRACT_ID = c.CONTRACT_ID
+		)
+		cpnum,
+		(
+			SELECT COUNT(*) FROM ext_cproduct_his_c WHERE
+			CONTRACT_PRODUCT_ID IN
+			(
+				SELECT CONTRACT_PRODUCT_ID FROM contract_product_his_c
+				WHERE CONTRACT_ID = c.CONTRACT_ID
+			)
+		)
+		epnum,
+		c.*
+		FROM contract_his_c c
+		<where>
+			<if test="state!=null">c.state=#{state}</if>
+		</where>
 	</select>
 	
 	<!-- 查看 -->

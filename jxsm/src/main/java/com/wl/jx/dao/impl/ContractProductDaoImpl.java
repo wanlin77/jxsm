@@ -1,6 +1,7 @@
 package com.wl.jx.dao.impl;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
@@ -17,5 +18,10 @@ public class ContractProductDaoImpl extends BaseDaoImpl<ContractProduct> impleme
 	//根据合同号删除货物
 	public void deleteByContractId(Serializable contractId) {
 		this.getSqlSession().delete(this.getNs() + "deleteByContractId", contractId);
+	}
+
+	@Override
+	public List<ContractProduct> findForExport(Serializable contractIds) {
+		return this.getSqlSession().selectList(this.getNs()+"findForExport", contractIds);
 	}
 }

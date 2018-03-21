@@ -10,7 +10,6 @@ import com.wl.jx.dao.ContractDao;
 import com.wl.jx.domain.Contract;
 import com.wl.jx.vo.OutProduct;
 
-
 @Repository
 public class ContractDaoImpl extends BaseDaoImpl<Contract> implements ContractDao{
 	public ContractDaoImpl() {
@@ -31,5 +30,9 @@ public class ContractDaoImpl extends BaseDaoImpl<Contract> implements ContractDa
 
 	public List<String> getExtName(Serializable contractProductId) {
 		return this.getSqlSession().selectList(this.getNs()+"getExtName", contractProductId);
+	}
+
+	public List<Contract> findForHistory(Contract contract) {
+		return this.getSqlSession().selectList(this.getNs()+"findForHistory", contract);
 	}
 }

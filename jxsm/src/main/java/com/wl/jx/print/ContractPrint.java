@@ -17,9 +17,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.wl.jx.service.ContractProductService;
 import com.wl.jx.vo.ContractProduct;
 import com.wl.util.DownloadUtil;
 import com.wl.util.PoiUtil;
@@ -567,8 +564,9 @@ public class ContractPrint{
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();			//生成流对象
 		wb.write(byteArrayOutputStream);													//将excel写入流
 
-		//工具类，封装弹出下载框：		
-		String outFile = "购销合同.xls";
+		//工具类，封装弹出下载框：
+		String contractNo = contract.getContractNo();
+		String outFile = "购销合同" + contractNo + ".xls";
 		DownloadUtil down = new DownloadUtil();
 		down.download(byteArrayOutputStream, response, outFile);
 

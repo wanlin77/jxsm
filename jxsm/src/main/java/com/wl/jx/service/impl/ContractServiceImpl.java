@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wl.common.springdao.SqlDao;
 import com.wl.jx.dao.ContractDao;
 import com.wl.jx.dao.ContractProductDao;
 import com.wl.jx.dao.ExtCproductDao;
@@ -23,6 +24,8 @@ public class ContractServiceImpl implements ContractService {
 	ContractProductDao contractProductDao;
 	@Autowired
 	ExtCproductDao extCpruductDao;
+	@Autowired
+	SqlDao sqlDao;
 	
 	public List<Contract> find(Contract contract) {
 		return contractDao.find(contract);
@@ -71,6 +74,45 @@ public class ContractServiceImpl implements ContractService {
 
 	public List<String> getExtName(Serializable contractProductId) {
 		return contractDao.getExtName(contractProductId);
+	}
+	
+	//归档
+	public void pigeonhole(Serializable[] contractIds) {
+		StringBuffer sBuf = new StringBuffer();
+		for (Serializable id : contractIds) {
+			sBuf.append("INSERT INTO contract_his_c SELECT * FROM contract_c WHERE contract_id='" + id + "';");
+			sBuf.append("INSERT INTO contract_product_his_c SELECT * FROM contract_product_c WHERE contract_id='" + id + "';");
+			sBuf.append("INSERT INTO ext_cproduct_his_c SELECT * FROM ext_cproduct_c WHERE contract_product_id in (select contract_product_id from contract_product_c where contract_id='" + id + "');");
+			
+			sBuf.append("delete from ext_cproduct_c WHERE contract_product_id in (select contract_product_id from contract_product_c where contract_id='" + id + "');");
+			sBuf.append("delete FROM contract_product_c WHERE contract_id='" + id + "';");
+			sBuf.append("delete from contract_c WHERE contract_id='" + id + "';");
+		}
+		
+		sqlDao.batchSQL(sBuf.toString().split(";"));
+		
+	}
+	
+	//回退
+	public void turnback(Serializable[] contractIds) {
+		StringBuffer sBuf = new StringBuffer();
+		for (Serializable id : contractIds) {
+			sBuf.append("INSERT INTO contract_c SELECT * FROM contract_his_c WHERE contract_id='" + id + "';");
+			sBuf.append("INSERT INTO contract_product_c SELECT * FROM contract_product_his_c WHERE contract_id='" + id + "';");
+			sBuf.append("INSERT INTO ext_cproduct_c SELECT * FROM ext_cproduct_his_c WHERE contract_product_id in (select contract_product_id from contract_product_his_c where contract_id='" + id + "');");
+			
+			sBuf.append("delete from ext_cproduct_his_c WHERE contract_product_id in (select contract_product_id from contract_product_his_c where contract_id='" + id + "');");
+			sBuf.append("delete FROM contract_product_his_c WHERE contract_id='" + id + "';");
+			sBuf.append("delete from contract_his_c WHERE contract_id='" + id + "';");
+		}
+		
+		sqlDao.batchSQL(sBuf.toString().split(";"));
+		
+	}
+	
+	//查询历史合同
+	public List<Contract> findForHistory(Contract contract) {
+		return contractDao.findForHistory(contract);
 	}
 
 }

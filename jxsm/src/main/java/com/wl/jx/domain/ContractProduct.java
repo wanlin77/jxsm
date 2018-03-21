@@ -13,9 +13,18 @@ public class ContractProduct implements Serializable {
 	private String productImage;
 	private Integer cnumber;
 	private String packingUnit;
+	private Integer boxNum;
+	
 	private Double price;
 	private Double amount;
 	
+	
+	public Integer getBoxNum() {
+		return boxNum;
+	}
+	public void setBoxNum(Integer boxNum) {
+		this.boxNum = boxNum;
+	}
 	public String getContractId() {
 		return contractId;
 	}

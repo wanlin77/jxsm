@@ -15,6 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="productDesc" column="PRODUCT_DESC"/>
 		<result property="cnumber" column="CNUMBER"/>
 		<result property="packingUnit" column="PACKING_UNIT"/>
+		<result property="boxNum" column="BOX_NUM"/>
 		<result property="price" column="PRICE"/>
 		<result property="amount" column="AMOUNT"/>
 	</resultMap>
@@ -38,6 +39,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		
 	</select>
 	
+	<!-- 列表 为报运搬家数据准备的-->
+	<select id="findForExport" parameterType="String" resultMap="contractProductRM">
+		SELECT
+			f.FACTORY_NAME,cp.*
+		FROM
+		(
+			SELECT * FROM contract_product_c
+		)	cp
+		LEFT JOIN
+		(
+			SELECT FACTORY_ID,FACTORY_NAME FROM factory_c
+		)	f
+		ON cp.FACTORY_ID=f.FACTORY_ID
+		<where>
+			CONTRACT_ID IN (#{contractIds})
+		</where>
+		
+	</select>
+	
 	<!-- 读取一个 -->
 	<select id="get" parameterType="String" resultMap="contractProductRM">
 		select * from contract_product_c
@@ -47,9 +67,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 从表新增，含带主表ID -->
 	<insert id="insert" parameterType="com.wl.jx.domain.ContractProduct">
 		insert into contract_product_c
-		(CONTRACT_PRODUCT_ID,CONTRACT_ID,FACTORY_ID,PRODUCT_NO,PRODUCT_DESC,CNUMBER,PACKING_UNIT,PRICE,AMOUNT)
+		(CONTRACT_PRODUCT_ID,CONTRACT_ID,FACTORY_ID,FACTORY_NAME,PRODUCT_NO,PRODUCT_DESC,CNUMBER,PACKING_UNIT,BOX_NUM,PRICE,AMOUNT)
 		values
-		(#{id},#{contractId},#{factoryId},#{productNo},#{productDesc},#{cnumber},#{packingUnit},#{price},#{amount})
+		(#{id},#{contractId},#{factoryId},(SELECT FACTORY_NAME FROM factory_c WHERE FACTORY_ID=#{factoryId}),#{productNo},#{productDesc},#{cnumber},#{packingUnit},#{boxNum},#{price},#{amount})
 	</insert>
 	
 	<!-- 从表修改 -->
