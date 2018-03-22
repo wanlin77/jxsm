@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wl.common.springdao.SqlDao;
+import com.wl.common.springdao.SQLDao;
 import com.wl.jx.dao.ContractDao;
 import com.wl.jx.dao.ContractProductDao;
 import com.wl.jx.dao.ExtCproductDao;
@@ -25,7 +25,7 @@ public class ContractServiceImpl implements ContractService {
 	@Autowired
 	ExtCproductDao extCpruductDao;
 	@Autowired
-	SqlDao sqlDao;
+	SQLDao sqlDao;
 	
 	public List<Contract> find(Contract contract) {
 		return contractDao.find(contract);

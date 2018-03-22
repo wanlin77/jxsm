@@ -20,8 +20,8 @@ import com.wl.util.UtilFuns;
  * SQLDAO sqlDao = (SQLDAO)AppContext.getInstance().getAppContext().getBean("sqlDao");
  * 
  */
-public class SqlDao {
-	private static Logger log = Logger.getLogger(SqlDao.class);
+public class SQLDao {
+	private static Logger log = Logger.getLogger(SQLDao.class);
 	private UtilFuns utilFuns = new UtilFuns();
 	
     private JdbcTemplate jdbcTemplate;

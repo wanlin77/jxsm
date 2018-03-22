@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.wl.common.springdao.SqlDao;
+import com.wl.common.springdao.SQLDao;
 import com.wl.util.file.FileUtil;
 
 public class SysStatController {
 	@Autowired
-	SqlDao sqlDao;
+	SQLDao sqlDao;
 	
 	//生产厂家销售情况统计饼形图
 	@RequestMapping("/run/stat/factorySale.action")
